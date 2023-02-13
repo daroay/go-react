@@ -1,0 +1,8 @@
+build/
+app.yaml
+.env
+*/node_modules/*
+
+
+public/**
+!public/.gitkeep

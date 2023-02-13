@@ -1,0 +1,4 @@
+db-docker/**
+frontend/**
+.env
+README.md

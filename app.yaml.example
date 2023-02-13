@@ -1,0 +1,42 @@
+runtime: go119
+service: default
+main: src
+
+manual_scaling:
+  instances: 1
+
+handlers:
+  - url: /api/.*
+    script: auto
+    secure: always
+  - url: /index.html
+    secure: always
+    redirect_http_response_code: 301
+    static_files: public/index.html
+    upload: public/index.html
+  - url: /index.js
+    secure: always
+    redirect_http_response_code: 301
+    static_files: public/index.js
+    upload: public/index.js
+  - url: /(.*\.(gif|png|jpg))$
+    secure: always
+    redirect_http_response_code: 301
+    static_files: public/\1
+    upload: public/.*\.(gif|png|jpg)$
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
+
+env_variables:
+  DB_NAME: postgres
+  DB_PASS:
+  DB_USER: postgres
+  DB_PORT: 5432
+  DB_HOST:
+  SERVICE_PORT: 8080
+  EXEC_ENV: "PROD"
+
+vpc_access_connector:
+  name: projects/movies-377518/locations/us-east1/connectors/movies-vpc-access
