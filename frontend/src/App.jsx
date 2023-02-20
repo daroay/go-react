@@ -11,6 +11,9 @@ function App() {
   const tickInterval = useRef(null)
   const jwtToken = useRef(null)
 
+  // null: unkown yet, true: logged in, false: not logged in
+  const [isUILoggedIn, setIsUILoggedIn] = useState(null)
+
   const navigate = useNavigate();
 
   const logOut = () => {
@@ -23,6 +26,7 @@ function App() {
       .catch(error => console.log("error loging out", error))
       .finally(() => {
         jwtToken.current = null
+        setIsUILoggedIn(false)
         console.log("jwtToken is", jwtToken)
         stopRefreshingToken()
         navigate("/");
@@ -58,8 +62,10 @@ function App() {
 
   const startRefreshingToken = () => {
     (async () => {
-      const newToken = await getRefreshedToken()
-      if (newToken !== null) {
+      console.log("ya agarro valor")
+      jwtToken.current = await getRefreshedToken()
+      if (jwtToken.current !== null) {
+        setIsUILoggedIn(true)
 
         if (tickInterval.current === null) {
           tickInterval.current = setInterval(async () => {
@@ -68,8 +74,6 @@ function App() {
           }, 10 * 1000)
           console.log("REFRESH ENABLED", tickInterval.current)
         }
-
-        jwtToken.current = newToken
 
       } else {
         console.log("not startRefreshingToken because user is not logged in")
@@ -93,7 +97,7 @@ function App() {
           <h1 className="mt-3">Go Watch a Movie!</h1>
         </div>
         <div className="col text-end">
-          {jwtToken.current === null ? (
+          {!isUILoggedIn ? (
             <Link to="/login">
               <span className="badge bg-success">Login</span>
             </Link>
@@ -125,7 +129,7 @@ function App() {
               >
                 Genres
               </Link>
-              {jwtToken.current !== null && (
+              {isUILoggedIn && (
                 <>
                   <Link
                     to="/admin/movie/0"
@@ -155,6 +159,7 @@ function App() {
           <Outlet
             context={{
               jwtToken,
+              isUILoggedIn,
               startRefreshingToken,
               setAlertClassName,
               setAlertMessage,

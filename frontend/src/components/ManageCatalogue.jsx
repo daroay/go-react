@@ -5,30 +5,31 @@ import Sign from "../images/sign.png";
 const ManageCatalog = () => {
   const [movies, setMovies] = useState([]);
 
-  const { jwtToken } = useOutletContext();
+  const { jwtToken, isUILoggedIn } = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (jwtToken.current === null) {
-      console.log("going somewhereelse")
-      navigate("/");
-    } else {
-      console.log(jwtToken.current, "is")
+    if (isUILoggedIn !== null) {
+      if (!isUILoggedIn) {
+        navigate("/");
+      }
+      if (isUILoggedIn) {
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Authorization", "Bearer " + jwtToken.current)
+
+        const requestOptions = {
+          method: "GET",
+          headers: headers,
+        };
+
+        fetch(`/api/admin/movies`, requestOptions)
+          .then((response) => response.json())
+          .then((data) => setMovies(data))
+          .catch((err) => console.log(err));
+      }
     }
-
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-
-    const requestOptions = {
-      method: "GET",
-      headers: headers,
-    };
-
-    fetch(`/api/admin/movies`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => setMovies(data))
-      .catch((err) => console.log(err));
-  }, [jwtToken, navigate]);
+  }, [isUILoggedIn]);
 
   return (
     <div>
