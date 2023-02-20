@@ -9,7 +9,8 @@
 To connect to Cloud SQL locally do:
 
 ```
-$ wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.0.0/cloud-sql-proxy.linux.amd64 -O > $HOME/go/bin/cloud-sql-proxy
+$ wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.0.0/cloud-sql-proxy.linux.amd64 -O $HOME/go/bin/cloud-sql-proxy
+$ chmod +x $HOME/go/bin/cloud-sql-proxy
 $ cloud-sql-proxy movies-377518:us-central1:movies
 ```
 

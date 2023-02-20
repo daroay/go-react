@@ -1,6 +1,7 @@
 package db
 
 import (
+	"backend/src/db/postgres_dbrepo"
 	"backend/src/models"
 	"database/sql"
 	"log"
@@ -9,6 +10,8 @@ import (
 type DBRepo interface {
 	Connection() *sql.DB
 	AllMovies() ([]*models.Movie, error)
+	GetUserByEmail(email string) (*models.User, error)
+	GetUserById(id int) (*models.User, error)
 }
 
 func ConnectToDb(driver, dsn string) (DBRepo, error) {
@@ -18,7 +21,7 @@ func ConnectToDb(driver, dsn string) (DBRepo, error) {
 
 	switch driver {
 	case "postgres":
-		mydbrepo, err = NewPostgresDBRepo(dsn)
+		mydbrepo, err = postgres_dbrepo.New(dsn)
 		if err != nil {
 			return nil, err
 		}

@@ -8,7 +8,11 @@ const Login = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState("");
 
-  const navitage = useNavigate();
+  const { setJwtToken } = useOutletContext();
+  const { setAlertClassName, setAlertMessage } = useOutletContext();
+  const { startRefreshingToken } = useOutletContext()
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSubmitted && !email.includes("@")) {
@@ -18,24 +22,46 @@ const Login = () => {
     }
   }, [email, isSubmitted])
 
-  const { setJwtToken } = useOutletContext();
 
-  const { setAlertClassName, setAlertMessage } = useOutletContext();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsSubmitted(true);
     console.log("email/pass", email, password);
 
-    if (email === "admin@example.com") {
-      setJwtToken("some-jwtToken");
-      setAlertClassName("d-none");
-      setAlertMessage("");
-      navitage("/")
-    } else {
-      setAlertClassName("alert-danger");
-      setAlertMessage("Invalid Credentials");
+    // Build the request payload
+    let payload = {
+      email: email,
+      password: password,
     }
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload)
+    }
+
+    fetch(`/api/authenticate`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setAlertClassName("alert-danger");
+          setAlertMessage(data.message);
+        } else {
+          setJwtToken(data.access_token);
+          setAlertClassName("d-none")
+          setAlertMessage("")
+          startRefreshingToken()
+          navigate("/")
+        }
+      })
+      .catch(error => {
+        setAlertClassName("alert-danger")
+        setAlertMessage(error)
+      })
   };
 
   return (
