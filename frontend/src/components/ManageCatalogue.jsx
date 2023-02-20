@@ -9,9 +9,11 @@ const ManageCatalog = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (jwtToken === "") {
+    if (jwtToken.current === null) {
       console.log("going somewhereelse")
       navigate("/");
+    } else {
+      console.log(jwtToken.current, "is")
     }
 
     const headers = new Headers();
@@ -22,7 +24,7 @@ const ManageCatalog = () => {
       headers: headers,
     };
 
-    fetch(`/api/movies`, requestOptions)
+    fetch(`/api/admin/movies`, requestOptions)
       .then((response) => response.json())
       .then((data) => setMovies(data))
       .catch((err) => console.log(err));

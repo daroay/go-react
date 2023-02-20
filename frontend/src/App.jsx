@@ -4,12 +4,12 @@ import { Outlet } from "react-router-dom";
 import Alert from "./components/Alert";
 
 function App() {
-  const [jwtToken, setJwtToken] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [alertClassName, setAlertClassName] = useState("d-none");
 
   // useRef is better on Strict.Mode (as in dev it double renders) and re-renders wont affect useRef
   const tickInterval = useRef(null)
+  const jwtToken = useRef(null)
 
   const navigate = useNavigate();
 
@@ -22,11 +22,12 @@ function App() {
     fetch("/api/logout", requestOptions)
       .catch(error => console.log("error loging out", error))
       .finally(() => {
-        setJwtToken("")
+        jwtToken.current = null
+        console.log("jwtToken is", jwtToken)
         stopRefreshingToken()
+        navigate("/");
       })
 
-    navigate("/");
   };
 
 
@@ -63,12 +64,12 @@ function App() {
         if (tickInterval.current === null) {
           tickInterval.current = setInterval(async () => {
             console.log("this will run every 10 seconds")
-            setJwtToken(await getRefreshedToken())
+            jwtToken.current = await getRefreshedToken()
           }, 10 * 1000)
           console.log("REFRESH ENABLED", tickInterval.current)
         }
 
-        setJwtToken(newToken)
+        jwtToken.current = newToken
 
       } else {
         console.log("not startRefreshingToken because user is not logged in")
@@ -92,7 +93,7 @@ function App() {
           <h1 className="mt-3">Go Watch a Movie!</h1>
         </div>
         <div className="col text-end">
-          {jwtToken === "" ? (
+          {jwtToken.current === null ? (
             <Link to="/login">
               <span className="badge bg-success">Login</span>
             </Link>
@@ -124,7 +125,7 @@ function App() {
               >
                 Genres
               </Link>
-              {jwtToken !== "" && (
+              {jwtToken.current !== null && (
                 <>
                   <Link
                     to="/admin/movie/0"
@@ -154,10 +155,9 @@ function App() {
           <Outlet
             context={{
               jwtToken,
-              setJwtToken,
+              startRefreshingToken,
               setAlertClassName,
               setAlertMessage,
-              startRefreshingToken
             }}
           />
         </div>

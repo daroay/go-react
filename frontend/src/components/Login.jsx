@@ -8,7 +8,7 @@ const Login = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState("");
 
-  const { setJwtToken } = useOutletContext();
+  const { jwtToken } = useOutletContext();
   const { setAlertClassName, setAlertMessage } = useOutletContext();
   const { startRefreshingToken } = useOutletContext()
 
@@ -51,7 +51,7 @@ const Login = () => {
           setAlertClassName("alert-danger");
           setAlertMessage(data.message);
         } else {
-          setJwtToken(data.access_token);
+          jwtToken.current = data.access_token
           setAlertClassName("d-none")
           setAlertMessage("")
           startRefreshingToken()
