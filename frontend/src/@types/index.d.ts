@@ -26,6 +26,7 @@ declare interface InputField {
   onChange: ChangeEventHandler<HTMLInputElement>;
   autoComplete: string;
   value: string;
+  errorDiv: string;
   errorMessage: string;
 }
 

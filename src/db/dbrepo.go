@@ -9,9 +9,18 @@ import (
 
 type DBRepo interface {
 	Connection() *sql.DB
+
+	// ** Movies ** //
 	AllMovies() ([]*models.Movie, error)
+	GetMovie(id int) (*models.Movie, error)
+	// GetMovieWithGenres(id int) (*models.Movie, error)
+
+	// ** Users ** //
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserById(id int) (*models.User, error)
+
+	// ** Genres ** //
+	AllGenres() ([]*models.Genre, error)
 }
 
 func ConnectToDb(driver, dsn string) (DBRepo, error) {

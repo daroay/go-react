@@ -19,7 +19,7 @@ const Input = forwardRef<HTMLInputElement, InputField>(
           autoComplete={props.autoComplete}
           value={props.value}
         />
-        <div>{props.errorMessage}</div>
+        <div className={props.errorDiv}>{props.errorMessage}</div>
       </div>
     );
   }
