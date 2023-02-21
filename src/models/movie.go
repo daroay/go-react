@@ -11,7 +11,7 @@ type Movie struct {
 	Description string    `json:"description"`
 	Image       string    `json:"image"`
 	Genres      []*Genre  `json:"genres,omitempty"`
-	GenresIds   []int     `json:"genres_ids"`
+	GenresIds   []int     `json:"genres_ids,omitempty"`
 	CreatedAt   time.Time `json:"-"`
 	UpdatedAt   time.Time `json:"-"`
 }

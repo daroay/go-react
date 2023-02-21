@@ -12,6 +12,7 @@ const ManageCatalog = () => {
     if (isUILoggedIn !== null) {
       if (!isUILoggedIn) {
         navigate("/");
+        return
       }
       if (isUILoggedIn) {
         const headers = new Headers();
@@ -29,7 +30,7 @@ const ManageCatalog = () => {
           .catch((err) => console.log(err));
       }
     }
-  }, [isUILoggedIn]);
+  }, [isUILoggedIn, jwtToken, navigate]);
 
   return (
     <div>
@@ -48,7 +49,7 @@ const ManageCatalog = () => {
           {movies.map((m) => (
             <tr key={m.id}>
               <td>
-                <Link to={`/movies/${m.id}/`}>{m.title}</Link>
+                <Link to={`/admin/movies/${m.id}/edit`}>{m.title}</Link>
               </td>
               <td>{m.release_date}</td>
               <td>{m.mpaa_rating}</td>

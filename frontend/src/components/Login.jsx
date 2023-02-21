@@ -23,11 +23,9 @@ const Login = () => {
   }, [email, isSubmitted])
 
 
-
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsSubmitted(true);
-    console.log("email/pass", email, password);
 
     // Build the request payload
     let payload = {

@@ -11,7 +11,7 @@ func (m *PostgresDBRepo) AllGenres() ([]*models.Genre, error) {
 	defer cancel()
 
 	query := `select 
-							id, genre
+							id, genre, created_at, updated_at
 						from
 							genres
 						order by
@@ -29,6 +29,8 @@ func (m *PostgresDBRepo) AllGenres() ([]*models.Genre, error) {
 		err := rows.Scan(
 			&g.ID,
 			&g.Genre,
+			&g.CreatedAt,
+			&g.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err

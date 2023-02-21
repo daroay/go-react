@@ -1,6 +1,6 @@
 const TextArea = (props) => {
   return (
-    <div class="mb-3">
+    <div className="mb-3">
       <label htmlFor={props.name} className="form-label">
         {props.title}
       </label>

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
@@ -132,13 +133,13 @@ function App() {
               {isUILoggedIn && (
                 <>
                   <Link
-                    to="/admin/movie/0"
+                    to="/admin/movies/0/edit"
                     className="list-group-item list-group-item-action"
                   >
                     Add Movie
                   </Link>
                   <Link
-                    to="/manage-catalogue"
+                    to="/admin/manage-catalogue"
                     className="list-group-item list-group-item-action"
                   >
                     Catalog

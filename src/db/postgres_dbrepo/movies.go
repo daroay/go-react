@@ -4,7 +4,6 @@ import (
 	"backend/src/models"
 	"context"
 	"database/sql"
-	"log"
 )
 
 func (m *PostgresDBRepo) AllMovies() ([]*models.Movie, error) {
@@ -119,7 +118,6 @@ func (m *PostgresDBRepo) GetMovie(id int) (*models.Movie, error) {
 	}
 
 	movie.Genres = genres
-	log.Println(genresIds)
 	movie.GenresIds = genresIds
 
 	return &movie, nil

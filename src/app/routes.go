@@ -22,7 +22,7 @@ func generateRoutes(app App) http.Handler {
 	// Front end routes
 	frontEndRoutes := []string{
 		"/movies",
-		"/manage-catalog",
+		"/admin/manage-catalog",
 	}
 	for _, s := range frontEndRoutes {
 		mux.Handle(fmt.Sprintf("%s*", s), http.StripPrefix(s, publicFolder))
@@ -40,7 +40,8 @@ func generateRoutes(app App) http.Handler {
 		mux.Route("/admin", func(mux chi.Router) {
 			mux.Use(app.authRequired)
 			mux.Get("/movies", app.allMovies)
-			mux.Get("/movies/{id}/edit", app.editMovie)
+			mux.Get("/genres", app.allGenres)
+			mux.Get("/movies/{id}", app.getMovie)
 		})
 	})
 
