@@ -26,21 +26,27 @@ const unAuthorizedAxios = () => {
 
 const authorizedAxios = (token) => {
 
+  if(token === null){
+    console.error("You cant send an empty token to authorizeAxios()")
+    return null
+  }
+
+  let currentToken = token
+
   const axiosApiInstance = axios.create();
 
   // Request interceptor for API calls
   axiosApiInstance.interceptors.request.use(
     async config => {
-      const value = token || await getAccessToken()
-      console.log("new bearer" , value)
+      currentToken = currentToken || await getAccessToken()
       config.headers = { 
-        'Authorization': `Bearer ${value}`,
+        'Authorization': `Bearer ${currentToken}`,
         'Accept': 'application/json',
+        'Pepito': "O"
       }
       return config;
     },
     error => {
-      console.log("xx", error)
       Promise.reject(error)
   });
   
@@ -48,13 +54,12 @@ const authorizedAxios = (token) => {
   axiosApiInstance.interceptors.response.use((response) => {
     return response
   }, async function (error) {
-    console.log("res", error)
-    const originalRequest = error.config;
-    if (error.response.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const access_token = await getAccessToken()          
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-      return axiosApiInstance(originalRequest);
+    const originalConfig = error.config;
+    const unauthorized = error.response.status >= 400 && error.response.status < 500
+    if (unauthorized && !originalConfig._retry) {
+      originalConfig._retry = true;
+      currentToken = null     
+      return axiosApiInstance(originalConfig);
     }
     return Promise.reject(error);
   });

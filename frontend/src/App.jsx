@@ -42,9 +42,10 @@ function App() {
   const doLogIn = (payload) => {
     logIn(
       payload,
-      () => {
+      async () => {
         setIsUILoggedIn(true)
-        setApi(new RestAPI(authorizedAxios()))
+        const token = await getAccessToken()
+        setApi(new RestAPI(authorizedAxios(token)))
         setAlertClassName("d-none")
         setAlertMessage("")
         navigate("/")
