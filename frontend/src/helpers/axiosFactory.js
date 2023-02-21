@@ -27,7 +27,7 @@ const unAuthorizedAxios = () => {
 const authorizedAxios = (token) => {
 
   if(token === null){
-    console.error("You cant send an empty token to authorizeAxios()")
+    console.error("You cant send an empty token to authorizedAxios()")
     return null
   }
 
