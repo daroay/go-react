@@ -5,32 +5,24 @@ import Sign from "../images/sign.png";
 const ManageCatalog = () => {
   const [movies, setMovies] = useState([]);
 
-  const { jwtToken, isUILoggedIn } = useOutletContext();
+  const { api, isUILoggedIn } = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isUILoggedIn !== null) {
-      if (!isUILoggedIn) {
-        navigate("/");
-        return
-      }
-      if (isUILoggedIn) {
-        const headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        headers.append("Authorization", "Bearer " + jwtToken.current)
-
-        const requestOptions = {
-          method: "GET",
-          headers: headers,
-        };
-
-        fetch(`/api/admin/movies`, requestOptions)
-          .then((response) => response.json())
-          .then((data) => setMovies(data))
-          .catch((err) => console.log(err));
-      }
+    if (isUILoggedIn === null || api === null) {
+      return
     }
-  }, [isUILoggedIn, jwtToken, navigate]);
+    if (!isUILoggedIn) {
+      navigate("/");
+      return
+    }
+    if (isUILoggedIn) {
+      (async () => {
+        setMovies(await api.admin.fetchMovies())
+      })()
+    }
+
+  }, [isUILoggedIn, api, navigate]);
 
   return (
     <div>

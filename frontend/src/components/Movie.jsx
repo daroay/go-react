@@ -1,29 +1,22 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
+
+
 
 const Movie = () => {
   const [movie, setMovie] = useState(null);
   let { id } = useParams();
 
-  const fetchMovie = async (id) => {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-
-    const requestOptions = {
-      method: "GET",
-      headers: headers,
-    };
-
-    return fetch(`/api/movies/${id}`, requestOptions)
-      .then((response) => response.json())
-      .catch((err) => console.log(err));
-  }
+  const { api } = useOutletContext()
 
   useEffect(() => {
-    (async () => {
-      setMovie(await fetchMovie(id))
-    })()
-  }, [id]);
+    console.log("2", api)
+    if (api !== null) {
+      (async () => {
+        setMovie(await api.fetchMovie(id))
+      })()
+    }
+  }, [id, api]);
 
   return (
     <div>

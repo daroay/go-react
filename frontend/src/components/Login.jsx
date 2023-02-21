@@ -8,11 +8,7 @@ const Login = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState("");
 
-  const { jwtToken } = useOutletContext();
-  const { setAlertClassName, setAlertMessage } = useOutletContext();
-  const { startRefreshingToken } = useOutletContext()
-
-  const navigate = useNavigate();
+  const { doLogIn } = useOutletContext();
 
   useEffect(() => {
     if (isSubmitted && !email.includes("@")) {
@@ -33,33 +29,7 @@ const Login = () => {
       password: password,
     }
 
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        'Content-Type': "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(payload)
-    }
-
-    fetch(`/api/authenticate`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          setAlertClassName("alert-danger");
-          setAlertMessage(data.message);
-        } else {
-          jwtToken.current = data.access_token
-          setAlertClassName("d-none")
-          setAlertMessage("")
-          startRefreshingToken()
-          navigate("/")
-        }
-      })
-      .catch(error => {
-        setAlertClassName("alert-danger")
-        setAlertMessage(error)
-      })
+    doLogIn(payload)
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import CheckBox from "./form/CheckBox";
 import Input from "./form/Input";
@@ -8,57 +8,13 @@ import TextArea from "./form/TextArea";
 const EditMovie = () => {
 
   const navigate = useNavigate()
-  const { jwtToken, isUILoggedIn } = useOutletContext()
+  const { api, isUILoggedIn } = useOutletContext()
 
   const [error, setError] = useState(null)
   const [errors, setErrors] = useState([])
 
   let { id } = useParams();
   const [movie, setMovie] = useState(null)
-
-
-  const fetchGenres = useCallback(async () => {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${jwtToken.current}`);
-
-    const requestOptions = {
-      method: "GET",
-      headers: headers,
-    };
-
-    return fetch(`/api/admin/genres`, requestOptions)
-      .then((response) => response.json())
-      .catch((err) => console.log(err));
-  }, [jwtToken])
-
-  const fetchMovie = useCallback(async () => {
-    if (id === "0") {
-      return {
-        id: 0,
-        title: "",
-        release_date: "",
-        runtime: "",
-        mpaa_rating: "",
-        description: "",
-        genres: [],
-        genres_ids: [],
-      }
-    }
-
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${jwtToken.current}`);
-
-    const requestOptions = {
-      method: "GET",
-      headers: headers,
-    };
-
-    return fetch(`/api/admin/movies/${id}`, requestOptions)
-      .then((response) => response.json())
-      .catch((err) => console.log(err));
-  }, [jwtToken, id])
 
   const mpaaOptions = [
     { id: "G", value: "G", },
@@ -75,7 +31,7 @@ const EditMovie = () => {
 
   // fetch stuff once logged in
   useEffect(() => {
-    if (isUILoggedIn === null) {
+    if (isUILoggedIn === null || api.current === null) {
       return
     }
 
@@ -85,22 +41,33 @@ const EditMovie = () => {
     }
 
     (async () => {
-      const genres = await fetchGenres()
-      const movie = await fetchMovie()
+      const genres = await api.admin.fetchGenres()
+
+      const api_movie = id === "0" ? {
+        id: 0,
+        title: "",
+        release_date: "",
+        runtime: "",
+        mpaa_rating: "",
+        description: "",
+        genres: [],
+        genres_ids: [],
+      } : await api.admin.fetchMovie(id)
+
       const movieGenres = []
       genres.forEach((g) => {
         movieGenres.push({
           ...g,
-          checked: movie.genres_ids.includes(g.id),
+          checked: api_movie.genres_ids.includes(g.id),
         })
       })
       setMovie(m => ({
-        ...movie,
+        ...api_movie,
         genres: movieGenres
       }))
     })()
 
-  }, [isUILoggedIn, fetchGenres, fetchMovie, navigate])
+  }, [isUILoggedIn, api, navigate, id])
 
 
   const handleSubmit = (event) => {
