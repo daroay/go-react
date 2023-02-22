@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import normalizeImage from "../helpers/normalizeImage";
 import Sign from "../images/sign.png";
 
 const ManageCatalog = () => {
+  const signSrc = normalizeImage(Sign)
   const [movies, setMovies] = useState([]);
 
   const { api, isUILoggedIn } = useOutletContext();
@@ -28,7 +30,7 @@ const ManageCatalog = () => {
     <div>
       <h2>Movie Catalog</h2>
       <hr />
-      <img src={Sign} alt="movie tickets" width="200px" height="100px" />
+      <img src={signSrc} alt="movie tickets" width="200px" height="100px" />
       <table className="table table-striped table-hover">
         <thead>
           <tr>

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import normalizeImage from "../helpers/normalizeImage";
 import Sign from "../images/sign.png";
 
 const Movies = () => {
+  const signSrc = normalizeImage(Sign)
+  console.log(Sign)
   const [movies, setMovies] = useState(null);
 
   const { api } = useOutletContext()
@@ -11,7 +14,9 @@ const Movies = () => {
     if (api === null) {
       return
     }
+
     (async () => {
+      console.log(Sign)
       setMovies(await api.fetchMovies())
     })()
   }, [api]);
@@ -20,7 +25,7 @@ const Movies = () => {
     <div>
       <h2>Movies</h2>
       <hr />
-      <img src={Sign} alt="movie tickets" width="200px" height="100px" />
+      <img src={signSrc} alt="movie tickets" width="200px" height="100px" />
       <table className="table table-striped table-hover">
         <thead>
           <tr>

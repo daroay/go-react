@@ -101,7 +101,7 @@ Open browser on port :8080. This should run the frontend and backend.
 Copy app.yaml and edit variables as required
 
 ```
-$ cp app.yaml.example pp.yaml
+$ cp app.yaml.example app.yaml
 ```
 
 Create a project in `cloud.google.com`
