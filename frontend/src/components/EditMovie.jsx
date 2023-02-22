@@ -77,6 +77,7 @@ const EditMovie = () => {
   const handleChange = () => (event) => {
     let value = event.target.value;
     let name = event.target.name;
+    console.log(name, value)
     setMovie({
       ...movie,
       [name]: value
@@ -138,6 +139,7 @@ const EditMovie = () => {
               title={"MPAA Rating"}
               name={"mpaa_rating"}
               options={mpaaOptions}
+              value={movie.mpaa_rating}
               onChange={handleChange("mpaa_rating")}
               placeHolder={"Choose"}
               errorMessage={"Please choose"}

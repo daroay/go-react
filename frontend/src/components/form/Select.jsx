@@ -15,8 +15,8 @@ const Select = (props) => {
         {props.options.map((option) => {
           return (
             <option
-              key={option.id}
-              value={option.id}
+              key={option.value}
+              value={option.value}
             >
               {option.value}
             </option>
