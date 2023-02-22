@@ -15,25 +15,6 @@ func generateRoutes(app App) http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(app.enableCORS)
 
-	// Static Assets
-	publicFolder := http.FileServer(http.Dir("public"))
-	mux.Handle("/*", publicFolder)
-
-	// Front end routes
-	frontEndRoutes := []string{
-		"/movies",
-		"/movies/{id}",
-		"/genres",
-		"/admin/movies/{id}/edit",
-		"/admin/manage-catalogue",
-		"/graphql",
-		"/login",
-		"/static/media",
-	}
-	for _, s := range frontEndRoutes {
-		mux.Handle(fmt.Sprintf("%s*", s), http.StripPrefix(s, publicFolder))
-	}
-
 	// Everything here is prefixed with /api
 	mux.Route("/api", func(mux chi.Router) {
 		mux.Get("/health", app.health)
@@ -50,6 +31,16 @@ func generateRoutes(app App) http.Handler {
 			mux.Get("/movies/{id}", app.getMovie)
 		})
 	})
+
+	// Static Assets
+	publicFolder := http.FileServer(http.Dir("public"))
+	static := "/static/media"
+	mux.Handle(fmt.Sprintf("%s*", static), http.StripPrefix(static, publicFolder))
+
+	// Front end routes
+	mux.Handle("/*", app.serveFrontEndRoutes(publicFolder))
+
+	// At this point, ano other route is NotFound
 
 	return mux
 }

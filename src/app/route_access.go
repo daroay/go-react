@@ -4,7 +4,6 @@ import (
 	"backend/src/sec"
 	"backend/src/utils"
 	"errors"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -52,7 +51,6 @@ func (app *App) authenticate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println(tokens.Token)
 	refreshCookie := app.auth.GetRefreshCookie(tokens.RefreshToken)
 	http.SetCookie(w, refreshCookie)
 
