@@ -6,6 +6,12 @@ manual_scaling:
   instances: 1
 
 handlers:
+  ## All next handlers can be replaced by only this one only, but proxying at front level is faster.
+  # - url: /.*
+  #   script: auto
+  #   secure: always
+  #   redirect_http_response_code: 301
+  ##
   - url: /api/.*
     script: auto
     secure: always
@@ -19,7 +25,7 @@ handlers:
     redirect_http_response_code: 301
     static_files: public/index.js
     upload: public/index.js
-  - url: /(.*\.(gif|png|jpg))$
+  - url: /static/media/(.*\.(gif|png|jpg))$
     secure: always
     redirect_http_response_code: 301
     static_files: public/\1
@@ -28,6 +34,7 @@ handlers:
     secure: always
     redirect_http_response_code: 301
     script: auto
+
 
 env_variables:
   DB_NAME: postgres
