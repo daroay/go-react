@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"reflect"
 )
 
 type JSONResponse struct {
@@ -13,7 +14,26 @@ type JSONResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+type JsonProcessed interface {
+	JsonPreProcess()
+}
+
 func WriteJSON(w http.ResponseWriter, status int, data interface{}, headers ...http.Header) error {
+
+	// Check if data implements JsonProcessed
+	if reflect.TypeOf(data).Kind() == reflect.Slice {
+		s := reflect.ValueOf(data)
+		for i := 0; i < s.Len(); i++ {
+			if a, ok := s.Index(i).Interface().(JsonProcessed); ok {
+				a.JsonPreProcess()
+			}
+		}
+	} else {
+		if a, ok := data.(JsonProcessed); ok {
+			a.JsonPreProcess()
+		}
+	}
+
 	out, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -33,7 +53,6 @@ func WriteJSON(w http.ResponseWriter, status int, data interface{}, headers ...h
 	}
 
 	return nil
-
 }
 
 func ReadJSON(w http.ResponseWriter, r *http.Request, data interface{}) error {

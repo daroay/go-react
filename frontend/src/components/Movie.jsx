@@ -10,12 +10,13 @@ const Movie = () => {
   const { api } = useOutletContext()
 
   useEffect(() => {
-    console.log("2", api)
-    if (api !== null) {
-      (async () => {
-        setMovie(await api.fetchMovie(id))
-      })()
+    if (api === null) {
+      return
     }
+    (async () => {
+      setMovie(await api.fetchMovie(id))
+    })()
+
   }, [id, api]);
 
   return (

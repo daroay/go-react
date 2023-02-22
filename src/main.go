@@ -41,7 +41,7 @@ func main() {
 		Issuer:        jwtIssuer,
 		Audience:      jwtAudience,
 		Secret:        jwtSecret,
-		TokenExpiry:   time.Second * 5,
+		TokenExpiry:   time.Minute * 15,
 		RefreshExpiry: time.Hour * 24,
 		CookieDomain:  cookieDomain,
 		CookiePath:    "/",

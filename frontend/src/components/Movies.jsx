@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import Sign from "../images/sign.png";
 
 const Movies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState(null);
+
+  const { api } = useOutletContext()
 
   useEffect(() => {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-
-    const requestOptions = {
-      method: "GET",
-      headers: headers,
-    };
-
-    fetch(`/api/movies`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => setMovies(data))
-      .catch((err) => console.log(err));
-  }, []);
+    if (api === null) {
+      return
+    }
+    (async () => {
+      setMovies(await api.fetchMovies())
+    })()
+  }, [api]);
 
   return (
     <div>
@@ -34,7 +30,7 @@ const Movies = () => {
           </tr>
         </thead>
         <tbody>
-          {movies.map((m) => (
+          {movies && movies.map((m) => (
             <tr key={m.id}>
               <td>
                 <Link to={`/movies/${m.id}/`}>{m.title}</Link>

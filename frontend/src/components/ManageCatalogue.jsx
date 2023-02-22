@@ -16,11 +16,11 @@ const ManageCatalog = () => {
       navigate("/");
       return
     }
-    if (isUILoggedIn) {
-      (async () => {
-        setMovies(await api.admin.fetchMovies())
-      })()
-    }
+
+    (async () => {
+      setMovies(await api.admin.fetchMovies())
+    })()
+
 
   }, [isUILoggedIn, api, navigate]);
 

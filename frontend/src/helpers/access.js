@@ -11,10 +11,9 @@ const getAccessToken = async () => {
       }
     })
     .then((data) => {
-      if (data && data.access_token) {
+      if (data) {
         return data.access_token
       }
-      console.log("user is not logged in")
       return null;
     })
     .catch((error) => console.error("user is not logged in", error))
@@ -30,7 +29,7 @@ const logOut = (logoutCallback) => {
   }
 
   fetch("/api/logout", requestOptions)
-    .catch(error => console.log("error loging out", error))
+    .catch(error => console.error("error loging out", error))
     .finally(logoutCallback)
 
 };

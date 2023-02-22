@@ -10,6 +10,12 @@ class RestAPI {
     return res.data
   }
 
+  async fetchMovies() {
+    const res = await this.axios.get(`/api/movies`)
+    return res.data
+  }
+
+
 }
 
 class AdminAPI {
