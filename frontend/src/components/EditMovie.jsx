@@ -61,10 +61,12 @@ const EditMovie = () => {
           checked: api_movie.genres_ids.includes(g.id),
         })
       })
-      setMovie(m => ({
+      delete api_movie.genres_ids // Re-create this at the end
+      console.log(api_movie)
+      setMovie({
         ...api_movie,
         genres: movieGenres
-      }))
+      })
     })()
 
   }, [isUILoggedIn, api, navigate, id])
@@ -81,6 +83,15 @@ const EditMovie = () => {
     setMovie({
       ...movie,
       [name]: value
+    })
+  }
+
+  const handleCheckBox = (event, idx) => {
+    const tmpGenres = movie.genres
+    tmpGenres[idx].checked = !tmpGenres[idx].checked
+    setMovie({
+      ...movie,
+      genres: tmpGenres
     })
   }
 
@@ -159,7 +170,7 @@ const EditMovie = () => {
             <hr />
             <h3>Genres</h3>
 
-            {Array.from(movie.genres).map((g) => {
+            {movie.genres.map((g, idx) => {
               return (<CheckBox
                 key={"genre-" + g.id}
                 id={"genre-" + g.id}
@@ -167,7 +178,7 @@ const EditMovie = () => {
                 name={"genre"}
                 title={g.genre}
                 checked={g.checked}
-                onChange={(e) => { }}
+                onChange={(event) => { handleCheckBox(event, idx) }}
               />)
             })}
 
