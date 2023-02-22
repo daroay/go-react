@@ -62,7 +62,6 @@ const EditMovie = () => {
         })
       })
       delete api_movie.genres_ids // Re-create this at the end
-      console.log(api_movie)
       setMovie({
         ...api_movie,
         genres: movieGenres
