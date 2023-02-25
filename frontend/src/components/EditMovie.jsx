@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import CheckBox from "./form/CheckBox";
 import Input from "./form/Input";
 import Select from "./form/Select";
@@ -73,6 +74,49 @@ const EditMovie = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    let errors = []
+    let required = [
+      { field: movie.title, name: "title" },
+      { field: movie.release_data, name: "release_date" },
+      { field: movie.runtime, name: "runtime" },
+      { field: movie.description, name: "description" },
+      { field: movie.mpaa_rating, name: "mpaa_rating" }
+    ]
+
+    required.forEach((obj) => {
+      if (obj.field === "") {
+        errors.push(obj.name)
+      }
+    })
+
+    const genres_ids = []
+    movie.genres.forEach((obj) => {
+      if (obj.checked) {
+        genres_ids.push(obj.id)
+      }
+    })
+
+    setMovie({
+      ...movie,
+      genres_ids: genres_ids
+    })
+
+    if (genres_ids.length === 0) {
+      errors.push("genres")
+    }
+
+    setErrors(errors)
+
+    if (errors.length > 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Movie details are incomplete",
+        icon: "error",
+        confirmButtonText: "ok"
+      })
+      return false
+    }
   }
 
   const handleChange = () => (event) => {
@@ -169,6 +213,7 @@ const EditMovie = () => {
             <hr />
             <h3>Genres</h3>
 
+
             {movie.genres.map((g, idx) => {
               return (<CheckBox
                 key={"genre-" + g.id}
@@ -180,6 +225,11 @@ const EditMovie = () => {
                 onChange={(event) => { handleCheckBox(event, idx) }}
               />)
             })}
+            <div className={hasError("genres") ? "text-danger" : "d-none"}>You must select at least 1 genre</div>
+
+            <hr />
+
+            <button className="btn btn-primary">Save</button>
 
           </form>
         </>}
