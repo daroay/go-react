@@ -8,6 +8,7 @@ require (
 	github.com/githubnemo/CompileDaemon v1.4.0 // indirect
 	github.com/go-chi/chi/v5 v5.0.8 // indirect
 	github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.13.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect

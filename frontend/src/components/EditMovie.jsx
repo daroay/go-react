@@ -43,31 +43,36 @@ const EditMovie = () => {
     }
 
     (async () => {
-      const genres = await api.admin.fetchGenres()
+      try {
+        const genres = await api.admin.fetchGenres()
 
-      const api_movie = id === "0" ? {
-        id: 0,
-        title: "",
-        release_date: "",
-        runtime: "",
-        mpaa_rating: "",
-        description: "",
-        genres: [],
-        genres_ids: [],
-      } : await api.admin.fetchMovie(id)
+        const api_movie = id === "0" ? {
+          id: 0,
+          title: "",
+          release_date: "",
+          runtime: "",
+          mpaa_rating: "",
+          description: "",
+          genres: [],
+          genres_ids: [],
+        } : await api.admin.fetchMovie(id)
 
-      const movieGenres = []
-      genres.forEach((g) => {
-        movieGenres.push({
-          ...g,
-          checked: api_movie.genres_ids && api_movie.genres_ids.includes(g.id),
+        const movieGenres = []
+        genres.forEach((g) => {
+          movieGenres.push({
+            ...g,
+            checked: api_movie.genres_ids && api_movie.genres_ids.includes(g.id),
+          })
         })
-      })
-      delete api_movie.genres_ids // Re-create this at the end
-      setMovie({
-        ...api_movie,
-        genres: movieGenres
-      })
+        delete api_movie.genres_ids // Re-create this at the end
+        setMovie({
+          ...api_movie,
+          genres: movieGenres,
+          release_date: jsDateFormat(api_movie.release_date)
+        })
+      } catch (ex) {
+        setError(ex.toString())
+      }
     })()
 
   }, [isUILoggedIn, api, navigate, id])
@@ -116,7 +121,7 @@ const EditMovie = () => {
 
     (async () => {
       // passed validations, so save changes
-      const data = await api.admin.saveMovie(0, {
+      const data = await api.admin.saveMovie(movie.id ? parseInt(movie.id) : 0, {
         ...movie,
         genres_ids: genres_ids,
         release_date: new Date(movie.release_date),
@@ -136,7 +141,8 @@ const EditMovie = () => {
   const handleChange = () => (event) => {
     let value = event.target.value;
     let name = event.target.name;
-    console.log(name, value)
+    console.log("old", name, movie[name])
+    console.log("new", name, value)
     setMovie({
       ...movie,
       [name]: value
@@ -160,8 +166,32 @@ const EditMovie = () => {
     }
   }
 
+  const confirmDelete = () => {
+    Swal.fire({
+      title: 'Delete movie?',
+      text: "You cannot undo this action!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        (async () => {
+          try {
+            await api.admin.deleteMovie(movie.id)
+            navigate("/admin/manage-catalogue")
+          } catch (ex) {
+            setError(ex.toString())
+          }
+        })()
+      }
+    })
+  }
+
   return (
     <div>
+      <div className={error ? "text-danger" : "d-none"}>{error}</div>
       {movie &&
         <>
           <h2>{addOrEditTitle()}</h2>
@@ -185,6 +215,7 @@ const EditMovie = () => {
               title={"Release Date"}
               className={"form-control"}
               type={"date"}
+              placeHolder={"YYYY-MM-DD"}
               name={"release_date"}
               value={jsDateFormat(movie.release_date)}
               onChange={handleChange("release_date")}
@@ -244,6 +275,9 @@ const EditMovie = () => {
             <hr />
 
             <button className="btn btn-primary">Save</button>
+            {movie.id > 0 &&
+              <a href="#!" className="btn btn-danger ms-2" onClick={confirmDelete}>Delete</a>
+            }
 
           </form>
         </>}

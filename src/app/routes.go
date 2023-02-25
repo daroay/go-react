@@ -31,6 +31,7 @@ func generateRoutes(app App) http.Handler {
 			mux.Get("/movies/{id}", app.getMovie)
 			mux.Put("/movies/0", app.insertMovie)
 			mux.Patch("/movies/{id}", app.updateMovie)
+			mux.Delete("/movies/{id}", app.deleteMovie)
 		})
 	})
 

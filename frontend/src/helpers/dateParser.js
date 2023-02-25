@@ -1,19 +1,15 @@
-const toYears = (dateStr) => {
+const humanTime = (dateStr) => {
   return new Date(dateStr).toLocaleDateString("en-US")
 }
 
 const jsDateFormat = (dateStr) => {
-  var d = new Date(dateStr),
-  month = '' + (d.getMonth() + 1),
-  day = '' + d.getDate(),
-  year = d.getFullYear();
-
-  if (month.length < 2) 
-    month = '0' + month;
-  if (day.length < 2) 
-    day = '0' + day;
-
-  return [year, month, day].join('-');
+  try {
+    const date = new Date(dateStr)
+    console.log(dateStr, date)
+    return date && date.toISOString().split('T')[0]
+  } catch(e){
+    return dateStr
+  }
 }
 
-export {toYears, jsDateFormat}
+export {humanTime, jsDateFormat}

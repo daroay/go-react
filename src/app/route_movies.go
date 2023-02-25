@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/imdario/mergo"
 )
 
 func (app *App) allMovies(w http.ResponseWriter, r *http.Request) {
@@ -83,4 +84,68 @@ func (app *App) insertMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) updateMovie(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	movieId, err := strconv.Atoi(id)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	var payload models.Movie
+	err = utils.ReadJSON(w, r, &payload)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	movie, err := app.dbrepo.GetMovie(payload.ID)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	if payload.Title != movie.Title {
+		movieImageUrl, err := app.moviedbClient.GetMoviePoster(payload.Title)
+		if err == nil {
+			payload.Image = movieImageUrl
+		} else {
+			log.Println("error getting movie poster", err)
+		}
+	}
+
+	if err := mergo.Merge(movie, payload, mergo.WithOverride); err != nil {
+		log.Println("merging error", err)
+	}
+
+	err = app.dbrepo.UpdateMovie(movieId, *movie)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	err = app.dbrepo.UpdateMovieGenres(movieId, payload.GenresIds)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusAccepted, movie)
+
+}
+
+func (app *App) deleteMovie(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	movieId, err := strconv.Atoi(id)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	err = app.dbrepo.DeleteMovie(movieId)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusAccepted, struct{}{})
 }

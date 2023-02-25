@@ -39,6 +39,11 @@ class AdminAPI {
     return res.data
   }
 
+  async deleteMovie(id) {
+    const res = await this.axios.delete(`/api/admin/movies/${id}`)
+    return res.data
+  }
+
   async saveMovie(id, movie) {
     console.log(movie)
     let res = null;

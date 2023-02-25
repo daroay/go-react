@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
-import { toYears } from "../helpers/dateParser";
+import { humanTime } from "../helpers/dateParser";
 
 
 
 const Movie = () => {
   const [movie, setMovie] = useState(null);
+  const [error, setError] = useState(null);
   let { id } = useParams();
 
   const { api } = useOutletContext()
@@ -15,19 +16,25 @@ const Movie = () => {
       return
     }
     (async () => {
-      setMovie(await api.fetchMovie(id))
+      try {
+        const api_movie = await api.fetchMovie(id)
+        setMovie(api_movie)
+      } catch (ex) {
+        setError(ex.toString())
+      }
     })()
 
   }, [id, api]);
 
   return (
     <div>
+      <div className={error ? "text-danger" : "d-none"}>{error}</div>
       {movie && (
         <>
           <h2>Movie: {movie.title}</h2>
           <small>
             <em>
-              {`${toYears(movie.release_date)}, ${movie.runtime} minutes ${movie.mpaa_rating}`}
+              {`${humanTime(movie.release_date)}, ${movie.runtime} minutes ${movie.mpaa_rating}`}
 
             </em>
           </small>

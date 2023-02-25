@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 
-const Input = forwardRef<HTMLInputElement, InputField>(
-  (props: InputField, ref) => {
+const Input = forwardRef(
+  (props, ref) => {
     return (
       <div className="mb-3">
         <label htmlFor={props.name} className="form-label">
@@ -9,6 +9,7 @@ const Input = forwardRef<HTMLInputElement, InputField>(
         </label>
 
         <input
+          required
           type={props.type}
           className={props.className}
           id={props.name}
@@ -18,6 +19,7 @@ const Input = forwardRef<HTMLInputElement, InputField>(
           onChange={props.onChange}
           autoComplete={props.autoComplete}
           value={props.value}
+          pattern={props.pattern}
         />
         <div className={props.errorDiv}>{props.errorMessage}</div>
       </div>
