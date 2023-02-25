@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
+import { toYears } from "../helpers/dateParser";
 
 
 
@@ -26,7 +27,7 @@ const Movie = () => {
           <h2>Movie: {movie.title}</h2>
           <small>
             <em>
-              {`${movie.release_date}, ${movie.runtime} minutes ${movie.mpaa_rating}`}
+              {`${toYears(movie.release_date)}, ${movie.runtime} minutes ${movie.mpaa_rating}`}
 
             </em>
           </small>

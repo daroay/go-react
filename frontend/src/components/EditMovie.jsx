@@ -5,6 +5,7 @@ import CheckBox from "./form/CheckBox";
 import Input from "./form/Input";
 import Select from "./form/Select";
 import TextArea from "./form/TextArea";
+import { jsDateFormat } from "../helpers/dateParser";
 
 const EditMovie = () => {
 
@@ -59,7 +60,7 @@ const EditMovie = () => {
       genres.forEach((g) => {
         movieGenres.push({
           ...g,
-          checked: api_movie.genres_ids.includes(g.id),
+          checked: api_movie.genres_ids && api_movie.genres_ids.includes(g.id),
         })
       })
       delete api_movie.genres_ids // Re-create this at the end
@@ -78,7 +79,7 @@ const EditMovie = () => {
     let errors = []
     let required = [
       { field: movie.title, name: "title" },
-      { field: movie.release_data, name: "release_date" },
+      { field: movie.release_date, name: "release_date" },
       { field: movie.runtime, name: "runtime" },
       { field: movie.description, name: "description" },
       { field: movie.mpaa_rating, name: "mpaa_rating" }
@@ -97,11 +98,6 @@ const EditMovie = () => {
       }
     })
 
-    setMovie({
-      ...movie,
-      genres_ids: genres_ids
-    })
-
     if (genres_ids.length === 0) {
       errors.push("genres")
     }
@@ -117,6 +113,24 @@ const EditMovie = () => {
       })
       return false
     }
+
+    (async () => {
+      // passed validations, so save changes
+      const data = await api.admin.saveMovie(0, {
+        ...movie,
+        genres_ids: genres_ids,
+        release_date: new Date(movie.release_date),
+        runtime: parseInt(movie.runtime, 10),
+      })
+      if (data.error) {
+        console.log(data.error)
+      } else {
+        navigate("/admin/manage-catalogue")
+      }
+
+    })()
+
+
   }
 
   const handleChange = () => (event) => {
@@ -172,7 +186,7 @@ const EditMovie = () => {
               className={"form-control"}
               type={"date"}
               name={"release_date"}
-              value={movie.release_date}
+              value={jsDateFormat(movie.release_date)}
               onChange={handleChange("release_date")}
               errorDiv={hasError("release_date") ? "text-danger" : "d-none"}
               errorMessage={"Please enter a release date"}

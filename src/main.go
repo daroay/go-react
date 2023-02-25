@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/src/app"
+	"backend/src/clients/moviedbclient"
 	"backend/src/db"
 	"backend/src/sec"
 	"fmt"
@@ -61,10 +62,14 @@ func main() {
 	}
 	defer dbrepo.Connection().Close()
 
+	// create moviedbclient
+	movieDBAPIKey := os.Getenv("MOVIEDB_APIKEY")
+	moviedbClient := moviedbclient.New(movieDBAPIKey)
+
 	// start a web server with given routes
 	port := os.Getenv("SERVICE_PORT")
 	log.Println("Starting application on port", port)
-	err = http.ListenAndServe(fmt.Sprintf(":%s", port), app.New(dbrepo, auth).Routes)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", port), app.New(dbrepo, auth, moviedbClient).Routes)
 
 	if err != nil {
 		log.Fatal(err)

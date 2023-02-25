@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"backend/src/models"
 	"encoding/json"
 	"errors"
 	"io"
@@ -14,22 +15,18 @@ type JSONResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-type JsonProcessed interface {
-	JsonPreProcess()
-}
-
 func WriteJSON(w http.ResponseWriter, status int, data interface{}, headers ...http.Header) error {
 
-	// Check if data implements JsonProcessed
+	// Check if data implements JsonProcessable
 	if reflect.TypeOf(data).Kind() == reflect.Slice {
 		s := reflect.ValueOf(data)
 		for i := 0; i < s.Len(); i++ {
-			if a, ok := s.Index(i).Interface().(JsonProcessed); ok {
+			if a, ok := s.Index(i).Interface().(models.JsonProcessable); ok {
 				a.JsonPreProcess()
 			}
 		}
 	} else {
-		if a, ok := data.(JsonProcessed); ok {
+		if a, ok := data.(models.JsonProcessable); ok {
 			a.JsonPreProcess()
 		}
 	}

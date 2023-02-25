@@ -13,7 +13,8 @@ type DBRepo interface {
 	// ** Movies ** //
 	AllMovies() ([]*models.Movie, error)
 	GetMovie(id int) (*models.Movie, error)
-	// GetMovieWithGenres(id int) (*models.Movie, error)
+	InsertMovie(movie models.Movie) (int, error)
+	UpdateMovieGenres(id int, genresIds []int) error
 
 	// ** Users ** //
 	GetUserByEmail(email string) (*models.User, error)

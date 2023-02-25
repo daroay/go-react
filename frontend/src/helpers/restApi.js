@@ -38,6 +38,17 @@ class AdminAPI {
     const res = await this.axios.get(`/api/admin/genres`)
     return res.data
   }
+
+  async saveMovie(id, movie) {
+    console.log(movie)
+    let res = null;
+    if (id === 0) {
+      res = await this.axios.put("/api/admin/movies/0", movie)
+    } else {
+      res = await this.axios.patch(`/api/admin/movies/${id}`, movie)
+    }
+    return res.data
+  }
 }
 
 export default RestAPI

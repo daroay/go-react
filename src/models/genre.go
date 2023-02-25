@@ -1,11 +1,19 @@
 package models
 
-import "time"
-
 type Genre struct {
-	ID        int       `json:"id"`
-	Genre     string    `json:"genre"`
-	Checked   bool      `json:"checked"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	ID      int    `json:"id"`
+	Genre   string `json:"genre"`
+	Checked bool   `json:"checked"`
+	Updatable
+}
+
+// Verify we implement interfaces
+var _ Validatable = (*Genre)(nil)
+var _ JsonProcessable = (*Genre)(nil)
+
+func (m *Genre) IsValid() (bool, error) {
+	return true, nil
+}
+
+func (m *Genre) JsonPreProcess() {
 }
