@@ -5,7 +5,6 @@ import Sign from "../images/sign.png";
 
 const Movies = () => {
   const signSrc = normalizeImage(Sign)
-  console.log(Sign)
   const [movies, setMovies] = useState(null);
 
   const { api } = useOutletContext()

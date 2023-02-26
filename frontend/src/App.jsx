@@ -46,13 +46,11 @@ function App() {
         setIsUILoggedIn(true)
         const token = await getAccessToken()
         setApi(new RestAPI(authorizedAxios(token)))
-        setAlertClassName("d-none")
-        setAlertMessage("")
+        alertOut("", "d-none")
         navigate("/")
       },
       (errorMessage) => {
-        setAlertClassName("alert-danger");
-        setAlertMessage(errorMessage);
+        alertOut(errorMessage, "alert-danger")
       }
     )
   }
