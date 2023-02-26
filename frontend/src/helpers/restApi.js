@@ -15,6 +15,21 @@ class RestAPI {
     return res.data
   }
 
+  async fetchMoviesByGenreId(genreId) {
+    const res = await this.axios.get(`/api/movies/genres/${genreId}`)
+    return res.data
+  }
+
+  async fetchGenres()  {
+    const res = await this.axios.get(`/api/genres`)
+    return res.data
+  }
+
+  async fetchGenre(id)  {
+    const res = await this.axios.get(`/api/genres/${id}`)
+    return res.data
+  }
+
 
 }
 
@@ -22,6 +37,11 @@ class AdminAPI {
 
   constructor(axios) {
     this.axios = axios
+  }
+
+  async fetchGenres()  {
+    const res = await this.axios.get(`/api/admin/genres`)
+    return res.data
   }
 
   async fetchMovie(id) {
@@ -34,13 +54,13 @@ class AdminAPI {
     return res.data
   }
 
-  async fetchGenres()  {
-    const res = await this.axios.get(`/api/admin/genres`)
+  async deleteMovie(id) {
+    const res = await this.axios.delete(`/api/admin/movies/${id}`)
     return res.data
   }
 
-  async deleteMovie(id) {
-    const res = await this.axios.delete(`/api/admin/movies/${id}`)
+  async fetctchMoviesWithGenre(genreId) {
+    const res = await this.axios.get(`/api/admin/genres/${genreId}`)
     return res.data
   }
 

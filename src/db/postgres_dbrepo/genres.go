@@ -42,3 +42,32 @@ func (m *PostgresDBRepo) AllGenres() ([]*models.Genre, error) {
 	return genres, nil
 
 }
+
+func (m *PostgresDBRepo) GetGenre(id int) (*models.Genre, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `select 
+							id, genre, created_at, updated_at
+						from
+							genres
+						where
+						  id = $1
+						`
+
+	var genre models.Genre
+	row := m.DB.QueryRowContext(ctx, query, id)
+
+	err := row.Scan(
+		&genre.ID,
+		&genre.Genre,
+		&genre.CreatedAt,
+		&genre.UpdatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &genre, nil
+
+}

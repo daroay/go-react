@@ -6,10 +6,9 @@ import { humanTime } from "../helpers/dateParser";
 
 const Movie = () => {
   const [movie, setMovie] = useState(null);
-  const [error, setError] = useState(null);
   let { id } = useParams();
 
-  const { api } = useOutletContext()
+  const { api, alertOut } = useOutletContext()
 
   useEffect(() => {
     if (api === null) {
@@ -20,7 +19,7 @@ const Movie = () => {
         const api_movie = await api.fetchMovie(id)
         setMovie(api_movie)
       } catch (ex) {
-        setError(ex.toString())
+        alertOut(ex.toString(), "alert-danger")
       }
     })()
 
@@ -28,7 +27,6 @@ const Movie = () => {
 
   return (
     <div>
-      <div className={error ? "text-danger" : "d-none"}>{error}</div>
       {movie && (
         <>
           <h2>Movie: {movie.title}</h2>

@@ -16,7 +16,6 @@ const Movies = () => {
     }
 
     (async () => {
-      console.log(Sign)
       setMovies(await api.fetchMovies())
     })()
   }, [api]);

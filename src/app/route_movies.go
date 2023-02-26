@@ -21,6 +21,24 @@ func (app *App) allMovies(w http.ResponseWriter, r *http.Request) {
 	_ = utils.WriteJSON(w, http.StatusOK, movies)
 }
 
+func (app *App) allMoviesByGenre(w http.ResponseWriter, r *http.Request) {
+
+	id := chi.URLParam(r, "id")
+	genreId, err := strconv.Atoi(id)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	movies, err := app.dbrepo.AllMoviesByGenre(genreId)
+	if err != nil {
+		utils.ErrorJSON(w, err)
+		return
+	}
+
+	_ = utils.WriteJSON(w, http.StatusOK, movies)
+}
+
 func (app *App) getMovie(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")

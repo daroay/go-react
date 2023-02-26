@@ -10,9 +10,8 @@ import { jsDateFormat } from "../helpers/dateParser";
 const EditMovie = () => {
 
   const navigate = useNavigate()
-  const { api, isUILoggedIn } = useOutletContext()
+  const { api, isUILoggedIn, alertOut } = useOutletContext()
 
-  const [error, setError] = useState(null)
   const [errors, setErrors] = useState([])
 
   let { id } = useParams();
@@ -71,7 +70,7 @@ const EditMovie = () => {
           release_date: jsDateFormat(api_movie.release_date)
         })
       } catch (ex) {
-        setError(ex.toString())
+        alertOut(ex.toString(), "alert-danger")
       }
     })()
 
@@ -182,7 +181,7 @@ const EditMovie = () => {
             await api.admin.deleteMovie(movie.id)
             navigate("/admin/manage-catalogue")
           } catch (ex) {
-            setError(ex.toString())
+            alertOut(ex.toString(), "alert-danger")
           }
         })()
       }
@@ -191,7 +190,6 @@ const EditMovie = () => {
 
   return (
     <div>
-      <div className={error ? "text-danger" : "d-none"}>{error}</div>
       {movie &&
         <>
           <h2>{addOrEditTitle()}</h2>

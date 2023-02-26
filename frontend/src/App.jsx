@@ -57,6 +57,15 @@ function App() {
     )
   }
 
+  const alertOut = (message, alertClassName) => {
+    setAlertMessage(message)
+    setAlertClassName(alertClassName)
+    setTimeout(() => {
+      setAlertMessage("")
+      setAlertClassName("d-none")
+    }, 1000 * 4)
+  }
+
 
 
   return (
@@ -130,6 +139,7 @@ function App() {
               isUILoggedIn,
               doLogIn,
               api,
+              alertOut,
             }}
           />
         </div>

@@ -19,7 +19,10 @@ func generateRoutes(app App) http.Handler {
 	mux.Route("/api", func(mux chi.Router) {
 		mux.Get("/health", app.health)
 		mux.Get("/movies", app.allMovies)
+		mux.Get("/movies/genres/{id}", app.allMoviesByGenre)
 		mux.Get("/movies/{id}", app.getMovie)
+		mux.Get("/genres", app.allGenres)
+		mux.Get("/genres/{id}", app.getGenre)
 		mux.Post("/authenticate", app.authenticate)
 		mux.Get("/refresh", app.refreshToken)
 		mux.Get("/logout", app.logout)

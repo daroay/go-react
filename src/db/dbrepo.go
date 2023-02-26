@@ -12,6 +12,7 @@ type DBRepo interface {
 
 	// ** Movies ** //
 	AllMovies() ([]*models.Movie, error)
+	AllMoviesByGenre(genreId int) ([]*models.Movie, error)
 	GetMovie(id int) (*models.Movie, error)
 	InsertMovie(movie models.Movie) (int, error)
 	UpdateMovie(id int, movie models.Movie) error
@@ -24,6 +25,7 @@ type DBRepo interface {
 
 	// ** Genres ** //
 	AllGenres() ([]*models.Genre, error)
+	GetGenre(id int) (*models.Genre, error)
 }
 
 func ConnectToDb(driver, dsn string) (DBRepo, error) {

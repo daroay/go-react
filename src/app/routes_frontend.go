@@ -20,6 +20,7 @@ func compileFrontEndRoutes() []*regexp.Regexp {
 	var stringFrontEndRoutes = []string{
 		"^/movies/?$",
 		"^/movies/\\d+/?$",
+		"^/movies/genres/\\d+/?$",
 		"^/genres/?$",
 		"^/admin/movies/\\d+/edit/?$",
 		"^/admin/manage-catalogue/?$",
