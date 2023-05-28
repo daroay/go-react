@@ -188,6 +188,10 @@ const EditMovie = () => {
     })
   }
 
+  const fileSelectedHandler = (event) => {
+    console.log(event.target.files[0])
+  }
+
   return (
     <div>
       {movie &&
@@ -242,6 +246,14 @@ const EditMovie = () => {
               errorMessage={"Please choose"}
               errorDiv={hasError("mpaa_rating") ? "text-danger" : "d-none"}
             ></Select>
+
+            <Input
+              title={"Image"}
+              type={"file"}
+              onChange={fileSelectedHandler}
+              className={"form-control"}
+              name={"Image"}
+            ></Input>
 
             <TextArea
               title="Description"
